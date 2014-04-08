@@ -67,6 +67,7 @@ import numpy as np
 import cv2 as cv
 import socket
 import time
+import sys
 
 # CHANGE THIS TO BE YOUR TEAM'S cRIO IP ADDRESS!
 HOST, PORT = "10.2.54.2", 1180
@@ -180,17 +181,9 @@ if __name__ == '__main__':
     # flow of data.
     last_t = get_time_millis()
 
-    # Open a socket with the cRIO so that we can send the state of the hot goal.
+    # Are we connected to the server on the robot?
     connected = False
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    # This is a pretty aggressive timeout...we want to reconnect automatically
-    # if we are disconnected.
-    s.settimeout(.05)
-    try:
-        s.connect((HOST, PORT))
-    except:
-        print "Could not connect at boot"
+    s = None
 
     while 1:
         # Get a new frame.
@@ -200,7 +193,7 @@ if __name__ == '__main__':
         small_img = cv.flip(cv.resize(img, (WEBCAM_WIDTH_PX, WEBCAM_HEIGHT_PX)), 1)
 
         # Render the image onto our canvas.
-        bg = draw_static(small_img, False)
+        bg = draw_static(small_img, connected)
 
         # Get the average color of each of the three boxes.
         cal, left, right = detect_colors(cv.cvtColor(bg, cv.COLOR_BGR2HSV))
@@ -220,9 +213,23 @@ if __name__ == '__main__':
         if right_on:
             color_far(bg, ((WIDTH_PX+WEBCAM_WIDTH_PX)/2+B, B), (WIDTH_PX-B, WEBCAM_HEIGHT_PX-B))
 
+
         # Throttle the output
         cur_time = get_time_millis()
         if last_t + PERIOD <= cur_time:
+            print connected
+            # Try to connect to the robot on open or disconnect
+            if not connected:
+                    # Open a socket with the cRIO so that we can send the state of the hot goal.
+                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+                    # This is a pretty aggressive timeout...we want to reconnect automatically
+                    # if we are disconnected.
+                    s.settimeout(1)
+                    s.connect((HOST, PORT))
+                except:
+                    print "failed to reconnect"
+                    last_t = cur_time + 1000
             try:
                 # Send one byte to the cRIO:
                 # 0x01: Right on
@@ -234,21 +241,14 @@ if __name__ == '__main__':
                 s.send(write_bytes)
                 last_t = cur_time
                 connected = True
-            except:
-                print "Could not connect"
+            except socket.error, (value,message):
+                if s:
+                    s.close()
+                print "Could not open socket: " + message
                 connected = False
-                try:
-                    # Try to reconnect.
-                    # The try inside of the except was TomBot's contribution...
-                    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    s.settimeout(.05)
-                    s.connect((HOST, PORT))
-                except:
-                    print "failed to reconnect"
-                    last_t = cur_time + 1000
 
         # Show the image.
-        cv.imshow("HotChez", bg)
+        cv.imshow("CheesyVision", bg)
 
         # Capture a keypress.
         key = cv.waitKey(10) & 255
