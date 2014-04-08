@@ -108,7 +108,7 @@ def get_time_millis():
 def color_distance(c1, c2):
     ''' Compute the difference between two HSV colors.
 
-    Currently this simply returns the "L1 norm" of the color,
+    Currently this simply returns the "L1 norm" for distance,
     or delta_h + delta_s + delta_v.  This is not a very robust
     way to do it, but it has worked well enough in our tests.
 
@@ -120,15 +120,15 @@ def color_distance(c1, c2):
         diff = (c1[i]-c2[i])
         # Wrap hue angle...OpenCV represents hue on (0, 180)
         if i == 0:
-            while diff < -90:
+            if diff < -90:
                 diff += 180
-            while diff > 90:
+            elif diff > 90:
                 diff -= 180
         total_diff += abs(diff)
     return total_diff
 
 def color_far(img, ul, lr):
-    ''' Light up a rectangle bright yellow if the color distance is large. '''
+    ''' Light up a bright yellow rectangle if the color distance is large. '''
     cv.rectangle(img, ul, lr, (0, 255, 255), -1)
 
 def draw_static(img, connected):
