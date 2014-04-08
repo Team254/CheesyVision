@@ -214,7 +214,7 @@ if __name__ == '__main__':
         right_on = right_dist > max_color_distance
 
         # If we detect a hot goal, color that side of the widget.
-        B = CONNECTED_BORDER/2
+        B = CONNECTED_BORDER-5
         if left_on:
             color_far(bg, (B, B), ((WIDTH_PX-WEBCAM_WIDTH_PX)/2-B, WEBCAM_HEIGHT_PX-B))
         if right_on:
