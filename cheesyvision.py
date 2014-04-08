@@ -215,8 +215,10 @@ if __name__ == '__main__':
 
         # If we detect a hot goal, color that side of the widget.
         B = CONNECTED_BORDER/2
-        color_far(bg, (B, B), ((WIDTH_PX-WEBCAM_WIDTH_PX)/2-B, WEBCAM_HEIGHT_PX-B))
-        color_far(bg, ((WIDTH_PX+WEBCAM_WIDTH_PX)/2+B, B), (WIDTH_PX-B, WEBCAM_HEIGHT_PX-B))
+        if left_on:
+            color_far(bg, (B, B), ((WIDTH_PX-WEBCAM_WIDTH_PX)/2-B, WEBCAM_HEIGHT_PX-B))
+        if right_on:
+            color_far(bg, ((WIDTH_PX+WEBCAM_WIDTH_PX)/2+B, B), (WIDTH_PX-B, WEBCAM_HEIGHT_PX-B))
 
         # Throttle the output
         cur_time = get_time_millis()
