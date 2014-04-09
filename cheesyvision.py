@@ -202,8 +202,8 @@ if __name__ == '__main__':
         right_dist = color_distance(right, cal)
 
         # Check the difference.
-        left_on = left_dist > max_color_distance
-        right_on = right_dist > max_color_distance
+        left_on = left_dist < max_color_distance
+        right_on = right_dist < max_color_distance
 
         # If we detect a hot goal, color that side of the widget.
         B = CONNECTED_BORDER-5
