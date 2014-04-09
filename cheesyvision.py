@@ -218,6 +218,7 @@ if __name__ == '__main__':
         if last_t + PERIOD <= cur_time:
             # Try to connect to the robot on open or disconnect
             if not connected:
+                try:
                     # Open a socket with the cRIO so that we can send the state of the hot goal.
                     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -239,10 +240,8 @@ if __name__ == '__main__':
                 s.send(write_bytes)
                 last_t = cur_time
                 connected = True
-            except socket.error, (value,message):
-                if s:
-                    s.close()
-                print "Could not open socket: " + message
+            except:
+                print "Could not send data to robot"
                 connected = False
 
         # Show the image.
