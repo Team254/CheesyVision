@@ -71,6 +71,9 @@ import time
 # CHANGE THIS TO BE YOUR TEAM'S cRIO IP ADDRESS!
 HOST, PORT = "10.2.54.2", 1180
 
+# Name of displayed window
+WINDOW_NAME = "CheesyVision"
+
 # Width of the entire widget
 WIDTH_PX = 1000
 
@@ -160,7 +163,7 @@ def detect_colors(img):
     return cal, left, right
 
 def main():
-    cv.namedWindow("HotChez",1)
+    cv.namedWindow(WINDOW_NAME, 1)
 
     # Open the webcam (should be the only video capture device present).
     capture = cv.VideoCapture(0)
@@ -212,7 +215,6 @@ def main():
         if right_on:
             color_far(bg, ((WIDTH_PX+WEBCAM_WIDTH_PX)/2+B, B), (WIDTH_PX-B, WEBCAM_HEIGHT_PX-B))
 
-
         # Throttle the output
         cur_time = get_time_millis()
         if last_t + PERIOD <= cur_time:
@@ -245,7 +247,7 @@ def main():
                 connected = False
 
         # Show the image.
-        cv.imshow("CheesyVision", bg)
+        cv.imshow(WINDOW_NAME, bg)
 
         # Capture a keypress.
         key = cv.waitKey(10) & 255
