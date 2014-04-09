@@ -159,7 +159,7 @@ def detect_colors(img):
 
     return cal, left, right
 
-if __name__ == '__main__':
+def main():
     cv.namedWindow("HotChez",1)
 
     # Open the webcam (should be the only video capture device present).
@@ -288,3 +288,6 @@ if __name__ == '__main__':
         last_max_color_distance = max_color_distance
 
     s.close()
+
+if __name__ == '__main__':
+    main()
