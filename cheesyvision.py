@@ -67,7 +67,6 @@ import numpy as np
 import cv2 as cv
 import socket
 import time
-import sys
 
 # CHANGE THIS TO BE YOUR TEAM'S cRIO IP ADDRESS!
 HOST, PORT = "10.2.54.2", 1180
@@ -217,7 +216,6 @@ if __name__ == '__main__':
         # Throttle the output
         cur_time = get_time_millis()
         if last_t + PERIOD <= cur_time:
-            print connected
             # Try to connect to the robot on open or disconnect
             if not connected:
                     # Open a socket with the cRIO so that we can send the state of the hot goal.
@@ -225,7 +223,7 @@ if __name__ == '__main__':
 
                     # This is a pretty aggressive timeout...we want to reconnect automatically
                     # if we are disconnected.
-                    s.settimeout(1)
+                    s.settimeout(.1)
                     s.connect((HOST, PORT))
                 except:
                     print "failed to reconnect"
