@@ -191,6 +191,7 @@ def main():
         # Get a new frame.
         has_frame, img = capture.read()
         if not has_frame:
+            time.sleep(0.0254)
             continue
 
         # Flip it and shrink it.
